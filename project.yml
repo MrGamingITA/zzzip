@@ -1,0 +1,69 @@
+name: Zzzip
+options:
+  bundleIdPrefix: io.github.mrgamingita
+  deploymentTarget:
+    macOS: "14.0"
+  developmentLanguage: en
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    exactVersion: 2.10.0
+settings:
+  base:
+    SWIFT_VERSION: "5"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGN_STYLE: Manual
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: NO
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    SWIFT_EMIT_LOC_STRINGS: YES
+    ARCHS: "arm64 x86_64"
+    ONLY_ACTIVE_ARCH: YES
+targets:
+  Zzzip:
+    type: application
+    platform: macOS
+    sources:
+      - path: Zzzip
+      - path: Vendor/7zip/7zz
+        buildPhase: resources
+      - path: Vendor/7zip/License.txt
+        buildPhase: resources
+    dependencies:
+      - package: Sparkle
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.mrgamingita.zzzip
+        PRODUCT_NAME: Zzzip
+        INFOPLIST_FILE: Zzzip/Resources/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: NO
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+      configs:
+        Release:
+          ONLY_ACTIVE_ARCH: NO
+  ZzzipTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: ZzzipTests
+    dependencies:
+      - target: Zzzip
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.mrgamingita.zzzip.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Zzzip.app/Contents/MacOS/Zzzip"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+schemes:
+  Zzzip:
+    build:
+      targets:
+        Zzzip: all
+        ZzzipTests: [test]
+    test:
+      targets:
+        - ZzzipTests
+      language: en

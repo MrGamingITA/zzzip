@@ -1,0 +1,10 @@
+build/
+.superpowers/
+DerivedData/
+*.xcodeproj/xcuserdata/
+.DS_Store
+*.xcuserstate
+xcuserdata/
+.github-publish/
+zzzip-sparkle-key*.txt
+docs/
