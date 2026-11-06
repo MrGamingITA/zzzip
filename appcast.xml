@@ -1,0 +1,33 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>Zzzip</title>
+        <item>
+            <title>1.0.0</title>
+            <pubDate>Sat, 07 Nov 2026 00:55:44 +0100</pubDate>
+            <link>https://github.com/MrGamingITA/zzzip</link>
+            <sparkle:version>2</sparkle:version>
+            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description sparkle:format="markdown"><![CDATA[## Zzzip 1.0.0 — first release 🐼
+
+**EN** — Open archives instead of unpacking them blindly.
+- Browse zip, rar, 7z, tar.gz and many more in a WinRAR-style window
+- Extract here, to a folder, or drag files straight to Finder
+- Quick Look and open files without extracting; edited files can be saved back
+- Create zip / 7z / tar archives with AES-256 password and split volumes
+- Finder Quick Action "Compress with Zzzip", automatic updates, English & Italian
+
+**IT** — Apri gli archivi invece di scompattarli alla cieca.
+- Sfoglia zip, rar, 7z, tar.gz e molti altri in una finestra in stile WinRAR
+- Estrai qui, in una cartella, o trascina i file direttamente nel Finder
+- Anteprima e apertura dei file senza estrarli; i file modificati si possono risalvare nell'archivio
+- Crea archivi zip / 7z / tar con password AES-256 e divisione in volumi
+- Azione rapida del Finder "Comprimi con Zzzip", aggiornamenti automatici, italiano e inglese
+
+**First launch / Primo avvio:** System Settings ▸ Privacy & Security ▸ *Open Anyway* (the app isn't notarized by Apple / l'app non è notarizzata da Apple).
+]]></description>
+            <enclosure url="https://github.com/MrGamingITA/zzzip/releases/download/v1.0.0/Zzzip-1.0.0.dmg" length="11035792" type="application/octet-stream" sparkle:edSignature="145Q6oeYirLdPQwbN1cuVwlkDz9BwEpyq7Ks60cEt1iAoZRVI7UvLuQ9aCWpPHAPJVBZCpfu2EoNmcZZOGDNCQ=="/>
+        </item>
+    </channel>
+</rss>
