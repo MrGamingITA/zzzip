@@ -47,7 +47,8 @@ git add project.yml website/index.html && git commit -qm "Release $NEW" && git t
 git push -q origin main "v$NEW"
 # "Zzzip.dmg" is a stable name: the website's Download button points to releases/latest/download/Zzzip.dmg
 cp "$DMG" build/dist/Zzzip.dmg
+NOTE_ARGS=(--generate-notes); [ -n "$NOTES" ] && NOTE_ARGS=(--notes-file "$NOTES")
 gh release create "v$NEW" "$DMG" "$DMG.sha256" build/dist/Zzzip.dmg --repo "$REPO" --title "Zzzip $NEW" \
-  ${NOTES:+--notes-file "$NOTES"} ${NOTES:---generate-notes}
+  "${NOTE_ARGS[@]}"
 git add appcast.xml && git commit -qm "appcast: $NEW" && git push -q origin main
 echo "✓ Published https://github.com/$REPO/releases/tag/v$NEW"
