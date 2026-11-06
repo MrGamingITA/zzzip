@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zzzip — Open archives. Don't just unpack them.</title>
+<meta name="description" content="A free, open-source archiver for macOS: browse, preview and extract only what you need.">
+<meta property="og:title" content="Zzzip">
+<meta property="og:description" content="A free, open-source archiver for macOS: browse, preview and extract only what you need.">
+<meta property="og:image" content="assets/img/logo.png">
+<meta name="theme-color" content="#2A1A5E">
+<link rel="icon" type="image/png" href="assets/img/logo.png">
+<link rel="apple-touch-icon" href="assets/img/logo.png">
+<link rel="preload" as="image" href="assets/img/bg-hero.webp">
+<style>
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:500;font-display:swap;src:url(assets/fonts/fredoka-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:600;font-display:swap;src:url(assets/fonts/fredoka-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/fredoka-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/nunito-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:600;font-display:swap;src:url(assets/fonts/nunito-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/nunito-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:800;font-display:swap;src:url(assets/fonts/nunito-latin-800-normal.woff2) format('woff2')}
+body{margin:0;background:#241650}
+html{scroll-behavior:smooth}
+a{color:#FFD9B8}a:hover{color:#FFFFFF}
+.zz-sky{background-color:#2A1A5E;background-image:radial-gradient(1.5px 1.5px at 8% 12%,rgba(255,255,255,.8) 50%,transparent 51%),radial-gradient(1px 1px at 22% 30%,rgba(255,255,255,.6) 50%,transparent 51%),radial-gradient(1.5px 1.5px at 35% 8%,rgba(255,255,255,.7) 50%,transparent 51%),radial-gradient(1px 1px at 48% 22%,rgba(255,255,255,.5) 50%,transparent 51%),radial-gradient(2px 2px at 62% 6%,rgba(255,255,255,.8) 50%,transparent 51%),radial-gradient(1px 1px at 74% 18%,rgba(255,255,255,.6) 50%,transparent 51%),radial-gradient(1.5px 1.5px at 88% 10%,rgba(255,255,255,.7) 50%,transparent 51%),radial-gradient(1px 1px at 95% 28%,rgba(255,255,255,.5) 50%,transparent 51%),radial-gradient(1px 1px at 15% 45%,rgba(255,255,255,.4) 50%,transparent 51%),radial-gradient(1.5px 1.5px at 82% 40%,rgba(255,255,255,.5) 50%,transparent 51%),linear-gradient(180deg,#2B1A63 0%,#3A2484 22%,#3B2585 55%,#33207A 80%,#291862 100%);background-size:100% 1400px,100% 1400px,100% 1400px,100% 1400px,100% 1400px,100% 1400px,100% 1400px,100% 1400px,100% 1400px,100% 1400px,100% 100%;background-repeat:repeat-y,repeat-y,repeat-y,repeat-y,repeat-y,repeat-y,repeat-y,repeat-y,repeat-y,repeat-y,no-repeat}
+.zz-btn{transition:transform .15s ease,box-shadow .15s ease,background-color .15s ease}
+.zz-btn:hover{transform:translateY(-2px)}
+.zz-btn:focus-visible,.zz-focus:focus-visible{outline:3px solid #FFD66B;outline-offset:3px}
+.zz-card{transition:transform .2s ease,border-color .2s ease,background-color .2s ease}
+.zz-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.28);background-color:rgba(255,255,255,.10)}
+.zz-nav:hover{color:#FFFFFF}
+.zz-row:hover{background-color:#EEE9FF}
+.zz-tool:hover{background-color:#ECE7FA}
+.zz-arrow{display:flex}
+.zz-float{animation:zzfloat 4s ease-in-out infinite}
+@keyframes zzfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.zz-hero{position:relative}
+.zz-hero::before{content:"";position:absolute;left:0;right:0;top:-30px;height:max(50vw,700px);background:url(assets/img/bg-hero.webp) center top/cover no-repeat;-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 62%,transparent 100%);mask-image:linear-gradient(180deg,#000 0%,#000 62%,transparent 100%);z-index:0;pointer-events:none}
+.zz-foot-art{position:relative;height:clamp(180px,26vw,360px);background:url(assets/img/bg-footer.webp) center bottom/max(100%,900px) auto no-repeat}
+.zz-foot-art::after{content:"";position:absolute;left:0;right:0;bottom:0;height:60px;background:linear-gradient(180deg,rgba(36,16,79,0),#24104F)}
+/* ---- effects ---- */
+.zz-hero::before{translate:calc(var(--mx,0) * -16px) calc(var(--my,0) * -10px);transition:translate .8s cubic-bezier(.2,.7,.2,1)}
+.zz-tilt{transform:perspective(1400px) rotateY(calc(var(--mx,0) * 5deg)) rotateX(calc(var(--my,0) * -4deg));transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.zz-panda{translate:calc(var(--mx,0) * 16px) calc(var(--my,0) * 8px);transition:translate .6s cubic-bezier(.2,.7,.2,1);transform-origin:50% 100%;animation:zzbreathe 3.8s ease-in-out infinite}
+@keyframes zzbreathe{0%,100%{scale:1 1}50%{scale:1.012 1.035}}
+.zz-star{position:absolute;pointer-events:none;z-index:1;animation:zztw 3.2s ease-in-out infinite}
+@keyframes zztw{0%,100%{opacity:.2;scale:.6}50%{opacity:1;scale:1}}
+.zz-shoot{position:absolute;top:70px;left:-160px;width:150px;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(255,246,214,0),#FFF6D6);opacity:0;z-index:1;pointer-events:none;animation:zzshoot 11s ease-in 2.5s infinite}
+@keyframes zzshoot{0%{opacity:0;transform:translate(0,0) rotate(16deg)}2%{opacity:1}10%{opacity:0;transform:translate(min(70vw,900px),min(20vw,260px)) rotate(16deg)}100%{opacity:0;transform:translate(min(70vw,900px),min(20vw,260px)) rotate(16deg)}}
+.zz-card img{transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.zz-card:hover img{transform:translateY(-6px) rotate(-5deg) scale(1.06)}
+@supports (animation-timeline: view()){
+.zz-hero::before{animation:zzbg linear both;animation-timeline:scroll(root);animation-range:0 900px}
+@keyframes zzbg{to{transform:translateY(300px)}}
+.zz-panda{animation:zzbreathe 3.8s ease-in-out infinite,zzpandaup linear both;animation-timeline:auto,scroll(root);animation-range:normal,0 700px}
+@keyframes zzpandaup{to{transform:translateY(-50px)}}
+.zz-reveal{animation:zzreveal linear both;animation-timeline:view();animation-range:entry 0% entry 70%}
+.zz-reveal:nth-child(2){animation-range:entry 8% entry 78%}
+.zz-reveal:nth-child(3){animation-range:entry 16% entry 86%}
+.zz-reveal:nth-child(4){animation-range:entry 24% entry 94%}
+.zz-reveal:nth-child(5){animation-range:entry 32% cover 30%}
+@keyframes zzreveal{from{opacity:0;translate:0 48px;scale:.96}to{opacity:1;translate:0 0;scale:1}}
+.zz-foot-panda{animation:zzfootup linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
+@keyframes zzfootup{from{opacity:0;transform:translateY(60px) rotate(-4deg)}to{opacity:1;transform:none}}
+}
+@media (prefers-reduced-motion:reduce){.zz-hero::before,.zz-panda,.zz-reveal,.zz-foot-panda,.zz-star,.zz-shoot{animation:none!important}.zz-shoot{display:none}.zz-tilt{transform:none}.zz-card:hover img{transform:none}}
+@media (max-width:900px){.zz-arrow{display:none}}
+@media (max-width:560px){.zz-nav-links{display:none!important}.zz-bubble{right:-14px!important;top:-58px!important}}
+@media (prefers-reduced-motion:reduce){.zz-float{animation:none}.zz-btn,.zz-card{transition:none}html{scroll-behavior:auto}}
+@media (max-width:560px){#zz-shot{width:calc(100% + 24px)!important;margin:-10px -12px -18px!important}}
+</style>
+</head>
+<body>
+<div class="zz-sky" style="min-height: 100vh; font-family: 'Nunito', system-ui, sans-serif; color: #E4DCFA; overflow: hidden; position: relative">
+
+<div class="zz-hero" id="zz-hero">
+<!-- twinkling stars + shooting star -->
+<svg class="zz-star" aria-hidden="true" viewBox="0 0 20 20" width="14" height="14" style="top: 150px; left: 46%; animation-delay: .4s"><path d="M10 0 L12 8 L20 10 L12 12 L10 20 L8 12 L0 10 L8 8 Z" fill="#FFE6A8"></path></svg>
+<svg class="zz-star" aria-hidden="true" viewBox="0 0 20 20" width="10" height="10" style="top: 96px; left: 58%; animation-delay: 1.3s"><path d="M10 0 L12 8 L20 10 L12 12 L10 20 L8 12 L0 10 L8 8 Z" fill="#FFFFFF"></path></svg>
+<svg class="zz-star" aria-hidden="true" viewBox="0 0 20 20" width="12" height="12" style="top: 230px; left: 6%; animation-delay: 2.1s"><path d="M10 0 L12 8 L20 10 L12 12 L10 20 L8 12 L0 10 L8 8 Z" fill="#FFE6A8"></path></svg>
+<svg class="zz-star" aria-hidden="true" viewBox="0 0 20 20" width="9" height="9" style="top: 60px; left: 78%; animation-delay: .9s"><path d="M10 0 L12 8 L20 10 L12 12 L10 20 L8 12 L0 10 L8 8 Z" fill="#FFFFFF"></path></svg>
+<svg class="zz-star" aria-hidden="true" viewBox="0 0 20 20" width="16" height="16" style="top: 300px; left: 92%; animation-delay: 1.8s"><path d="M10 0 L12 8 L20 10 L12 12 L10 20 L8 12 L0 10 L8 8 Z" fill="#FFD66B"></path></svg>
+<svg class="zz-star" aria-hidden="true" viewBox="0 0 20 20" width="8" height="8" style="top: 380px; left: 40%; animation-delay: 2.6s"><path d="M10 0 L12 8 L20 10 L12 12 L10 20 L8 12 L0 10 L8 8 Z" fill="#FFFFFF"></path></svg>
+<span class="zz-shoot" aria-hidden="true"></span>
+<!-- ============ HEADER ============ -->
+<header style="max-width: 1200px; margin: 0 auto; padding: 22px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; position: relative; z-index: 3">
+<a href="#top" class="zz-focus" aria-label="Zzzip home" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: #FFF1DE">
+<img src="assets/img/logo.png" alt="" width="56" height="56" style="width: 56px; height: 56px; display: block; filter: drop-shadow(0 6px 14px rgba(0,0,0,.35))">
+<span style="font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 34px; letter-spacing: .5px">Zzzip</span>
+</a>
+<nav aria-label="Main" style="display: flex; align-items: center; gap: 26px; flex-wrap: wrap">
+<div class="zz-nav-links" style="display: flex; gap: 26px; align-items: center">
+<a href="#features" class="zz-nav zz-focus" style="color: #F1ECFF; text-decoration: none; font-weight: 700; font-size: 15px"><span data-i18n="navFeatures"></span></a>
+<a href="#download" class="zz-nav zz-focus" style="color: #F1ECFF; text-decoration: none; font-weight: 700; font-size: 15px"><span data-i18n="navDownload"></span></a>
+<a href="https://github.com/MrGamingITA/zzzip" class="zz-nav zz-focus" style="color: #F1ECFF; text-decoration: none; font-weight: 700; font-size: 15px">GitHub</a>
+<span aria-hidden="true" style="width: 1px; height: 26px; background: rgba(255,255,255,.25)"></span>
+</div>
+<div role="group" aria-label="Language" style="display: flex; gap: 2px; padding: 4px; border-radius: 999px; background: rgba(255,255,255,.08)">
+<button type="button" class="zz-focus" data-lang="en" aria-pressed="true" style="border: 0; cursor: pointer; min-width: 44px; height: 32px; border-radius: 999px; font-family: inherit; font-weight: 800; font-size: 14px; background: #5B3FD0; color: #FFFFFF">EN</button>
+<button type="button" class="zz-focus" data-lang="it" aria-pressed="false" style="border: 0; cursor: pointer; min-width: 44px; height: 32px; border-radius: 999px; font-family: inherit; font-weight: 800; font-size: 14px; background: transparent; color: #CFC4F3">IT</button>
+</div>
+</nav>
+</header>
+
+<!-- ============ HERO ============ -->
+<section id="top" style="max-width: 1200px; margin: 0 auto; padding: 40px 24px 40px; display: flex; flex-wrap: wrap; gap: 48px; align-items: center; position: relative; z-index: 2">
+<div style="flex: 1 1 420px; min-width: 0">
+<h1 style="margin: 0; font-family: 'Fredoka', sans-serif; font-weight: 700; color: #FFF1DE; font-size: clamp(40px, 5.4vw, 64px); line-height: 1.06; letter-spacing: -.5px">
+<span style="display: block"><span data-i18n="h1a"></span></span>
+<span style="display: block"><span data-i18n="h1b"></span></span>
+<span style="display: inline-block; position: relative"><span data-i18n="h1c"></span><svg aria-hidden="true" viewBox="0 0 120 14" preserveAspectRatio="none" style="position: absolute; left: 2%; bottom: -8px; width: 96%; height: 12px"><path d="M3 9 C 30 3, 80 3, 117 8" stroke="#F2702A" stroke-width="5" fill="none" stroke-linecap="round"></path></svg></span>
+<svg aria-hidden="true" viewBox="0 0 40 40" width="38" height="38" style="vertical-align: top; margin-left: 10px"><path d="M8 14 l4 -6" stroke="#FFB04A" stroke-width="3" stroke-linecap="round"></path><path d="M26 6 v10 M21 11 h10" stroke="#FFD66B" stroke-width="3" stroke-linecap="round"></path><path d="M14 26 l-4 8" stroke="#FFB04A" stroke-width="3" stroke-linecap="round"></path></svg>
+</h1>
+<p style="margin: 26px 0 30px; font-size: 21px; line-height: 1.5; color: #E8E1FB; max-width: 480px"><span data-i18n="sub"></span></p>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px">
+<a href="#download" class="zz-btn" style="display: inline-flex; align-items: center; gap: 12px; padding: 0 26px; height: 54px; border-radius: 14px; background: linear-gradient(180deg,#FF8A3D,#EE6420); color: #FFFFFF; text-decoration: none; font-weight: 800; font-size: 17px; box-shadow: 0 8px 22px rgba(238,100,32,.38), inset 0 1px 0 rgba(255,255,255,.35)">
+<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg>
+<span data-i18n="dlMac"></span>
+</a>
+<span style="font-size: 14px; color: #D4CAF2; font-weight: 600"><span data-i18n="meta"></span></span>
+</div>
+<a href="https://github.com/MrGamingITA/zzzip" class="zz-btn" style="display: inline-flex; align-items: center; gap: 10px; padding: 0 22px; height: 54px; border-radius: 14px; border: 2px solid rgba(255,255,255,.45); background: rgba(255,255,255,.04); color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 16px; align-self: flex-start">
+<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C6.5 2 2 6.6 2 12.2c0 4.5 2.9 8.3 6.8 9.7.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.3 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4-1.4 6.8-5.2 6.8-9.7C22 6.6 17.5 2 12 2z"></path></svg>
+<span data-i18n="viewGh"></span>
+</a>
+</div>
+</div>
+
+<!-- App window mock -->
+<div style="flex: 1 1 480px; min-width: 0; position: relative; padding-top: 150px">
+<!-- sleeping panda on window -->
+<div aria-hidden="true" style="position: absolute; top: 0; left: 50%; transform: translateX(-46%); width: 300px; z-index: 3">
+<div class="zz-float zz-bubble" style="position: absolute; right: -78px; top: -42px; width: 112px; height: 84px">
+<img src="assets/img/zzz-bubble.webp" alt="" style="width: 100%; height: 100%; object-fit: contain; display: block">
+<span style="position: absolute; left: 30%; right: 6%; top: 18%; bottom: 36%; display: flex; align-items: center; justify-content: center; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 22px; color: #3B2585">zzZ</span>
+</div>
+<img class="zz-panda" src="assets/img/panda-hero.webp" alt="" style="width: 100%; height: auto; display: block; filter: drop-shadow(0 8px 10px rgba(0,0,0,.3))">
+</div>
+
+<div class="zz-tilt" style="position: relative; z-index: 2">
+<img id="zz-shot" src="assets/img/screenshot-en.webp" width="1072" height="563" alt="Zzzip window showing the contents of a zip archive" style="display: block; width: calc(100% + 64px); height: auto; margin: -24px -32px -40px">
+</div>
+</div>
+</section>
+</div>
+
+<!-- ============ FEATURES ============ -->
+<section id="features" style="max-width: 1200px; margin: 0 auto; padding: 36px 24px 20px; position: relative; z-index: 2">
+<h2 class="zz-reveal" style="margin: 0 0 30px; display: flex; align-items: center; justify-content: center; gap: 18px; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 34px; color: #FFF1DE">
+<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M4 6l5 4M3 15l7-2" stroke="#F2702A" stroke-width="3" stroke-linecap="round"></path></svg>
+<span data-i18n="hFeatures"></span>
+<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M20 6l-5 4M21 15l-7-2" stroke="#F2702A" stroke-width="3" stroke-linecap="round"></path></svg>
+</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px">
+<article class="zz-card zz-reveal"style="padding: 24px 20px; border-radius: 18px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); box-shadow: inset 0 1px 0 rgba(255,255,255,.08)">
+<img src="assets/img/ic-browse.webp" alt="" style="width: 84px; height: 72px; object-fit: contain; object-position: left center; display: block">
+<h3 style="margin: 16px 0 10px; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 20px; line-height: 1.2; color: #FFFFFF"><span data-i18n="f1t"></span></h3>
+<p style="margin: 0; font-size: 14.5px; line-height: 1.55; color: #DCD3F7"><span data-i18n="f1d"></span></p>
+</article>
+<article class="zz-card zz-reveal"style="padding: 24px 20px; border-radius: 18px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); box-shadow: inset 0 1px 0 rgba(255,255,255,.08)">
+<img src="assets/img/ic-drag.webp" alt="" style="width: 84px; height: 72px; object-fit: contain; object-position: left center; display: block">
+<h3 style="margin: 16px 0 10px; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 20px; line-height: 1.2; color: #FFFFFF"><span data-i18n="f2t"></span></h3>
+<p style="margin: 0; font-size: 14.5px; line-height: 1.55; color: #DCD3F7"><span data-i18n="f2d"></span></p>
+</article>
+<article class="zz-card zz-reveal"style="padding: 24px 20px; border-radius: 18px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); box-shadow: inset 0 1px 0 rgba(255,255,255,.08)">
+<img src="assets/img/ic-preview.webp" alt="" style="width: 84px; height: 72px; object-fit: contain; object-position: left center; display: block">
+<h3 style="margin: 16px 0 10px; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 20px; line-height: 1.2; color: #FFFFFF"><span data-i18n="f3t"></span></h3>
+<p style="margin: 0; font-size: 14.5px; line-height: 1.55; color: #DCD3F7"><span data-i18n="f3d"></span></p>
+</article>
+<article class="zz-card zz-reveal"style="padding: 24px 20px; border-radius: 18px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); box-shadow: inset 0 1px 0 rgba(255,255,255,.08)">
+<img src="assets/img/ic-create.webp" alt="" style="width: 84px; height: 72px; object-fit: contain; object-position: left center; display: block">
+<h3 style="margin: 16px 0 10px; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 20px; line-height: 1.2; color: #FFFFFF"><span data-i18n="f4t"></span></h3>
+<p style="margin: 0; font-size: 14.5px; line-height: 1.55; color: #DCD3F7"><span data-i18n="f4d"></span></p>
+</article>
+<article class="zz-card zz-reveal"style="padding: 24px 20px; border-radius: 18px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); box-shadow: inset 0 1px 0 rgba(255,255,255,.08)">
+<img src="assets/img/ic-private.webp" alt="" style="width: 84px; height: 72px; object-fit: contain; object-position: left center; display: block">
+<h3 style="margin: 16px 0 10px; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 20px; line-height: 1.2; color: #FFFFFF"><span data-i18n="f5t"></span></h3>
+<p style="margin: 0; font-size: 14.5px; line-height: 1.55; color: #DCD3F7"><span data-i18n="f5d"></span></p>
+</article>
+</div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section style="max-width: 1200px; margin: 0 auto; padding: 44px 24px 20px; position: relative; z-index: 2">
+<h2 class="zz-reveal" style="margin: 0 0 30px; display: flex; align-items: center; justify-content: center; gap: 18px; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 34px; color: #FFF1DE">
+<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M4 6l5 4M3 15l7-2" stroke="#F2702A" stroke-width="3" stroke-linecap="round"></path></svg>
+<span data-i18n="hHow"></span>
+<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M20 6l-5 4M21 15l-7-2" stroke="#F2702A" stroke-width="3" stroke-linecap="round"></path></svg>
+</h2>
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 16px; align-items: center">
+<li class="zz-card zz-reveal"style="flex: 1 1 260px; display: flex; align-items: center; gap: 20px; padding: 18px 22px; border-radius: 18px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14)">
+<span style="flex: none; width: 96px; height: 86px; border-radius: 16px; background: rgba(255,255,255,.10); display: flex; align-items: center; justify-content: center">
+<img src="assets/img/step-1.webp" alt="" style="width: 78px; height: 78px; object-fit: contain; display: block">
+</span>
+<div>
+<span aria-hidden="true" style="display: inline-flex; width: 28px; height: 28px; border-radius: 50%; background: #F2702A; color: #FFFFFF; font-weight: 800; font-size: 15px; align-items: center; justify-content: center">1</span>
+<p style="margin: 6px 0 0; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 21px; line-height: 1.2; color: #FFFFFF"><span data-i18n="s1"></span></p>
+</div>
+</li>
+<li aria-hidden="true" class="zz-arrow" style="flex: 0 0 auto; color: #A893F0"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></li>
+<li class="zz-card zz-reveal"style="flex: 1 1 260px; display: flex; align-items: center; gap: 20px; padding: 18px 22px; border-radius: 18px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14)">
+<span style="flex: none; width: 96px; height: 86px; border-radius: 16px; background: rgba(255,255,255,.10); display: flex; align-items: center; justify-content: center">
+<img src="assets/img/step-2.webp" alt="" style="width: 78px; height: 78px; object-fit: contain; display: block">
+</span>
+<div>
+<span aria-hidden="true" style="display: inline-flex; width: 28px; height: 28px; border-radius: 50%; background: #F2702A; color: #FFFFFF; font-weight: 800; font-size: 15px; align-items: center; justify-content: center">2</span>
+<p style="margin: 6px 0 0; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 21px; line-height: 1.2; color: #FFFFFF"><span data-i18n="s2"></span></p>
+</div>
+</li>
+<li aria-hidden="true" class="zz-arrow" style="flex: 0 0 auto; color: #A893F0"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></li>
+<li class="zz-card zz-reveal"style="flex: 1 1 260px; display: flex; align-items: center; gap: 20px; padding: 18px 22px; border-radius: 18px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14)">
+<span style="flex: none; width: 96px; height: 86px; border-radius: 16px; background: rgba(255,255,255,.10); display: flex; align-items: center; justify-content: center">
+<img src="assets/img/step-3.webp" alt="" style="width: 78px; height: 78px; object-fit: contain; display: block">
+</span>
+<div>
+<span aria-hidden="true" style="display: inline-flex; width: 28px; height: 28px; border-radius: 50%; background: #F2702A; color: #FFFFFF; font-weight: 800; font-size: 15px; align-items: center; justify-content: center">3</span>
+<p style="margin: 6px 0 0; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 21px; line-height: 1.2; color: #FFFFFF"><span data-i18n="s3"></span></p>
+</div>
+</li>
+</ol>
+
+<!-- formats -->
+<div style="margin-top: 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px; padding: 20px 28px; border-radius: 18px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14)">
+<div style="display: flex; align-items: center; gap: 14px; flex: 0 1 260px">
+<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M4 6l5 4M3 15l7-2" stroke="#F2702A" stroke-width="3" stroke-linecap="round"></path></svg>
+<h3 style="margin: 0; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 21px; line-height: 1.2; color: #FFFFFF"><span data-i18n="formats"></span></h3>
+</div>
+<span aria-hidden="true" style="width: 1px; align-self: stretch; background: rgba(255,255,255,.2)"></span>
+<ul id="zz-formats" data-i18n-aria="formats" aria-label="" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; flex: 1 1 400px">
+
+</ul>
+</div>
+</section>
+
+<!-- ============ INSTALL ============ -->
+<section id="download" style="max-width: 1200px; margin: 0 auto; padding: 44px 24px 30px; position: relative; z-index: 2">
+<h2 class="zz-reveal" style="margin: 0 0 30px; display: flex; align-items: center; justify-content: center; gap: 18px; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 34px; color: #FFF1DE">
+<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M4 6l5 4M3 15l7-2" stroke="#F2702A" stroke-width="3" stroke-linecap="round"></path></svg>
+<span data-i18n="hInstall"></span>
+<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M20 6l-5 4M21 15l-7-2" stroke="#F2702A" stroke-width="3" stroke-linecap="round"></path></svg>
+</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px">
+<!-- download card -->
+<article class="zz-reveal" style="padding: 26px 28px; border-radius: 20px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16)">
+<div style="display: flex; gap: 22px; align-items: flex-start; flex-wrap: wrap">
+<img src="assets/img/ic-dmg.webp" alt="" style="flex: none; width: 92px; height: 84px; object-fit: contain; display: block">
+<div style="flex: 1 1 220px">
+<h3 style="margin: 0 0 6px; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 24px; color: #FFFFFF"><span data-i18n="dlTitle"></span></h3>
+<p style="margin: 0 0 16px; font-size: 15px; color: #DCD3F7"><span data-i18n="dlDesc"></span></p>
+<a href="https://github.com/MrGamingITA/zzzip/releases/latest/download/Zzzip.dmg" class="zz-btn" style="display: inline-flex; align-items: center; gap: 10px; padding: 0 24px; height: 48px; border-radius: 12px; background: linear-gradient(180deg,#FF8A3D,#EE6420); color: #FFFFFF; text-decoration: none; font-weight: 800; font-size: 16px; box-shadow: 0 8px 20px rgba(238,100,32,.35), inset 0 1px 0 rgba(255,255,255,.35)">
+<svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg>
+<span data-i18n="dlBtn"></span>
+</a>
+</div>
+</div>
+<div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.18)">
+<h4 style="margin: 0 0 12px; font-size: 15px; font-weight: 800; color: #FFFFFF"><span data-i18n="firstLaunch"></span></h4>
+<ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 14px; line-height: 1.5; color: #E4DCFA">
+<li style="display: flex; gap: 12px; align-items: flex-start"><span aria-hidden="true" style="flex: none; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,.14); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800">1</span><span><span data-i18n="l1"></span></span></li>
+<li style="display: flex; gap: 12px; align-items: flex-start"><span aria-hidden="true" style="flex: none; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,.14); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800">2</span><span><span data-i18n="l2"></span></span></li>
+<li style="display: flex; gap: 12px; align-items: flex-start"><span aria-hidden="true" style="flex: none; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,.14); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800">3</span><span><span data-i18n="l3a"></span> <strong style="color: #FFFFFF"><span data-i18n="l3b"></span></strong> <span data-i18n="l3c"></span> <strong style="color: #FFFFFF; background: rgba(255,255,255,.12); padding: 1px 6px; border-radius: 5px"><span data-i18n="l3d"></span></strong>.</span></li>
+</ol>
+</div>
+</article>
+<!-- build card -->
+<article class="zz-reveal" style="padding: 26px 28px; border-radius: 20px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16)">
+<div style="display: flex; gap: 22px; align-items: flex-start; flex-wrap: wrap">
+<img src="assets/img/ic-terminal.webp" alt="" style="flex: none; width: 92px; height: 84px; object-fit: contain; display: block">
+<div style="flex: 1 1 220px">
+<h3 style="margin: 0 0 6px; font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 24px; color: #FFFFFF"><span data-i18n="buildTitle"></span></h3>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #DCD3F7"><span data-i18n="buildDesc"></span></p>
+</div>
+</div>
+<div style="margin-top: 22px; position: relative; border-radius: 12px; background: #1B1338; border: 1px solid rgba(255,255,255,.12); padding: 16px 56px 16px 18px; overflow-x: auto">
+<pre style="margin: 0; font-family: 'SF Mono', ui-monospace, Menlo, Consolas, monospace; font-size: 14px; line-height: 1.7; color: #F1ECFF; white-space: pre"><span style="color: #FFB04A">git clone</span> https://github.com/MrGamingITA/zzzip.git \
+<span style="color: #FFB04A">&amp;&amp;</span> cd zzzip &amp;&amp; ./scripts/install.sh</pre>
+<button type="button" class="zz-focus" id="zz-copy" data-i18n-aria="copyLabel" aria-label="" style="position: absolute; top: 8px; right: 8px; width: 44px; height: 44px; border: 0; border-radius: 10px; background: rgba(255,255,255,.08); color: #E4DCFA; cursor: pointer; display: flex; align-items: center; justify-content: center">
+<svg id="zz-copy-ico" aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"></path></svg>
+<svg id="zz-copied-ico" style="display:none" aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#7EE2A8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>
+</button>
+</div>
+<p role="status" style="margin: 14px 0 0; font-size: 14.5px; color: #E4DCFA; min-height: 22px" id="zz-copymsg"></p>
+</article>
+</div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer style="position: relative; margin-top: 10px; z-index: 2">
+<div class="zz-foot-art" aria-hidden="true">
+<div style="position: absolute; right: 8%; bottom: 18%; width: clamp(150px, 18vw, 250px); z-index: 1">
+<div class="zz-float" style="position: absolute; left: 44%; top: -30px; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 24px; color: #F1ECFF; text-shadow: 0 2px 8px rgba(0,0,0,.35)">zzZ</div>
+<img class="zz-foot-panda" src="assets/img/panda-footer.webp" alt="" style="width: 100%; height: auto; display: block; filter: drop-shadow(0 8px 12px rgba(20,8,60,.45))">
+</div>
+</div>
+<div style="background: #24104F; padding: 14px 24px 32px">
+<div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; font-size: 15px; font-weight: 600; color: #F1ECFF; position: relative">
+<span style="display: inline-flex; align-items: center; gap: 10px">
+<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><defs><clipPath id="zzflag"><circle cx="12" cy="12" r="10"></circle></clipPath></defs><g clip-path="url(#zzflag)"><rect x="2" y="2" width="7" height="20" fill="#169B62"></rect><rect x="9" y="2" width="6" height="20" fill="#FFFFFF"></rect><rect x="15" y="2" width="7" height="20" fill="#E5243B"></rect></g></svg>
+<span data-i18n="madeWith"></span> <svg role="img" aria-label="love" viewBox="0 0 24 24" width="16" height="16"><path d="M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z" fill="#FF4D5E"></path></svg> <span data-i18n="inItaly"></span>
+</span>
+<span aria-hidden="true" style="width: 1px; height: 20px; background: rgba(255,255,255,.25)"></span>
+<span style="display: inline-flex; align-items: center; gap: 8px">
+<svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7 21h10M4 7h16"></path><path d="M6 7l-3 7a3 3 0 0 0 6 0z"></path><path d="M18 7l-3 7a3 3 0 0 0 6 0z"></path></svg>
+<span data-i18n="license"></span>
+</span>
+<span aria-hidden="true" style="width: 1px; height: 20px; background: rgba(255,255,255,.25)"></span>
+<span style="display: inline-flex; align-items: center; gap: 8px">
+<svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2l9 5v10l-9 5-9-5V7z"></path><path d="M3 7l9 5 9-5M12 12v10"></path></svg>
+<span data-i18n="powered"></span>
+</span>
+<span aria-hidden="true" style="width: 1px; height: 20px; background: rgba(255,255,255,.25)"></span>
+<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #D9CFF5">
+<svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"></path><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"></path></svg>
+<span data-i18n="aiNote"></span>
+</span>
+<span aria-hidden="true" style="width: 1px; height: 20px; background: rgba(255,255,255,.25)"></span>
+<a href="https://github.com/MrGamingITA/zzzip" class="zz-nav zz-focus" style="display: inline-flex; align-items: center; gap: 8px; color: #F1ECFF; text-decoration: none">
+<svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.5 2 2 6.6 2 12.2c0 4.5 2.9 8.3 6.8 9.7.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.8-1 2.8-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.3 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5 4-1.4 6.8-5.2 6.8-9.7C22 6.6 17.5 2 12 2z"></path></svg>
+GitHub
+</a>
+</div>
+</div>
+</footer>
+</div>
+<script>
+var ZZ_T = {
+  en: {
+    navFeatures: 'Features', navDownload: 'Download',
+    h1a: 'Open archives.', h1b: 'Don’t just unpack', h1c: 'them.',
+    sub: 'A free, open-source archiver: browse, preview and extract only what you need.',
+    dlMac: 'Download for macOS', viewGh: 'View on GitHub', meta: 'Free · macOS 14+ · v1.0.0',
+    tbExtractTo: 'Extract To', tbExtractHere: 'Extract Here', tbPreview: 'Preview', tbOpen: 'Open', tbAdd: 'Add', tbDelete: 'Delete', tbTest: 'Test',
+    colName: 'Name', colSize: 'Size', colMod: 'Modified', items: 'items', item: 'item',
+    archiveInfo: 'Archive: ZIP · Compressed: 21.8 MB', month: 'Jan',
+    hFeatures: 'Features',
+    f1t: 'Browse before extracting', f1d: 'Open an archive, explore its contents and extract only what you need.',
+    f2t: 'Drag files straight to Finder', f2d: 'Move or extract files directly where you want with a simple drag & drop.',
+    f3t: 'Quick Look & open in place', f3d: 'Preview files (images, text, and more) and open them without extracting.',
+    f4t: 'Create zip/7z/tar (with no mess on your Desktop)', f4d: 'Build archives in popular formats and keep your workspace clean.',
+    f5t: 'Private: no tracking, works offline.', f5d: 'No accounts, no telemetry, no data collection. The only connection is the update check, and you can turn it off.',
+    shotAlt: 'Zzzip window showing the contents of a zip archive',
+    hHow: 'How it works', s1: 'Double-click an archive.', s2: 'Pick your files.', s3: 'Drop them where you want.',
+    formats: 'Works with all the popular formats', more: 'and many more',
+    hInstall: 'Install Zzzip',
+    dlTitle: 'Download the app', dlDesc: 'Get the ready-to-use macOS app (DMG).', dlBtn: 'Download Zzzip (DMG)',
+    firstLaunch: 'First launch (macOS):',
+    l1: 'Open the downloaded .dmg and drag Zzzip to Applications.', l2: 'Launch Zzzip from Applications.',
+    l3a: 'If macOS shows a warning, go to', l3b: 'System Settings › Privacy & Security', l3c: 'and click', l3d: 'Open Anyway',
+    buildTitle: 'Build it', buildDesc: 'Prefer to build from source? It’s open-source and easy to set up.',
+    buildNote: 'This will build Zzzip and install it on your Mac.', copied: 'Copied to clipboard!', copyLabel: 'Copy command',
+    madeWith: 'Made with', inItaly: 'in Italy', license: 'MIT License', powered: 'Powered by 7-Zip', aiNote: 'Illustrations generated with AI'
+  },
+  it: {
+    navFeatures: 'Funzioni', navDownload: 'Scarica',
+    h1a: 'Apri gli archivi.', h1b: 'Non limitarti a', h1c: 'scompattarli.',
+    sub: 'Un archiviatore gratuito e open source: sfoglia, visualizza in anteprima ed estrai solo ciò che ti serve.',
+    dlMac: 'Scarica per macOS', viewGh: 'Vedi su GitHub', meta: 'Gratis · macOS 14+ · v1.0.0',
+    tbExtractTo: 'Estrai in', tbExtractHere: 'Estrai qui', tbPreview: 'Anteprima', tbOpen: 'Apri', tbAdd: 'Aggiungi', tbDelete: 'Elimina', tbTest: 'Verifica',
+    colName: 'Nome', colSize: 'Dimensione', colMod: 'Modificato', items: 'elementi', item: 'elemento',
+    archiveInfo: 'Archivio: ZIP · Compresso: 21,8 MB', month: 'gen',
+    hFeatures: 'Funzioni',
+    f1t: 'Sfoglia prima di estrarre', f1d: 'Apri un archivio, esplora il contenuto ed estrai solo ciò che ti serve.',
+    f2t: 'Trascina i file nel Finder', f2d: 'Sposta o estrai i file dove vuoi con un semplice trascina e rilascia.',
+    f3t: 'Quick Look e apertura diretta', f3d: 'Visualizza in anteprima immagini, testo e altro, e aprili senza estrarli.',
+    f4t: 'Crea zip/7z/tar (senza disordine sulla Scrivania)', f4d: 'Crea archivi nei formati più diffusi e mantieni pulito il tuo spazio di lavoro.',
+    f5t: 'Privato: niente tracciamento, funziona offline.', f5d: 'Nessun account, nessuna telemetria, nessuna raccolta dati. L’unica connessione è il controllo degli aggiornamenti, e puoi disattivarlo.',
+    shotAlt: 'Finestra di Zzzip con il contenuto di un archivio zip',
+    hHow: 'Come funziona', s1: 'Fai doppio clic su un archivio.', s2: 'Scegli i tuoi file.', s3: 'Trascinali dove vuoi.',
+    formats: 'Funziona con tutti i formati più diffusi', more: 'e molti altri',
+    hInstall: 'Installa Zzzip',
+    dlTitle: 'Scarica l’app', dlDesc: 'L’app per macOS pronta all’uso (DMG).', dlBtn: 'Scarica Zzzip (DMG)',
+    firstLaunch: 'Primo avvio (macOS):',
+    l1: 'Apri il file .dmg scaricato e trascina Zzzip in Applicazioni.', l2: 'Avvia Zzzip da Applicazioni.',
+    l3a: 'Se macOS mostra un avviso, vai in', l3b: 'Impostazioni di Sistema › Privacy e sicurezza', l3c: 'e fai clic su', l3d: 'Apri comunque',
+    buildTitle: 'Compilalo', buildDesc: 'Preferisci compilare dal sorgente? È open source e facile da configurare.',
+    buildNote: 'Questo comando compila Zzzip e lo installa sul tuo Mac.', copied: 'Copiato negli appunti!', copyLabel: 'Copia comando',
+    madeWith: 'Fatto con', inItaly: 'in Italia', license: 'Licenza MIT', powered: 'Basato su 7-Zip', aiNote: 'Illustrazioni generate con l’IA'
+  }
+};
+
+
+
+var ZZ_FORMATS = ['ZIP', 'RAR', '7Z', 'TAR', 'GZ', 'BZ2', 'XZ', 'DMG', 'CAB'];
+</script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var state = { lang: 'en', folder: 'italy', sel: null, asc: true };
+  try { var saved = localStorage.getItem('zzzip-lang'); if (saved === 'it' || saved === 'en') state.lang = saved; else if ((navigator.language || '').toLowerCase().indexOf('it') === 0) state.lang = 'it'; } catch (e) {}
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function fmtSize(mb) { if (mb == null) return '—'; var s = mb < 1 ? Math.max(1, Math.round(mb * 1024)) + ' KB' : mb.toFixed(1) + ' MB'; return state.lang === 'it' ? s.replace('.', ',') : s; }
+
+  function renderFormats() {
+    var t = ZZ_T[state.lang];
+    var items = ZZ_FORMATS.map(function (f) { return [f, f]; }).concat([['···', t.more]]);
+    $('zz-formats').innerHTML = items.map(function (x) { return '<li title="' + esc(x[1]) + '" style="padding:0 16px;height:36px;display:inline-flex;align-items:center;border-radius:999px;background:#E9E2FF;color:#33207A;font-family:\'Fredoka\',sans-serif;font-weight:700;font-size:16px">' + esc(x[0]) + '</li>'; }).join('');
+  }
+  var copied = false;
+  function applyLang() {
+    var t = ZZ_T[state.lang];
+    document.documentElement.lang = state.lang;
+    document.querySelectorAll('[data-i18n]').forEach(function (el) { el.textContent = t[el.getAttribute('data-i18n')]; });
+    document.querySelectorAll('[data-i18n-aria]').forEach(function (el) { el.setAttribute('aria-label', t[el.getAttribute('data-i18n-aria')]); });
+    document.querySelectorAll('[data-lang]').forEach(function (b) {
+      var on = b.getAttribute('data-lang') === state.lang;
+      b.setAttribute('aria-pressed', on); b.style.background = on ? '#5B3FD0' : 'transparent'; b.style.color = on ? '#FFFFFF' : '#CFC4F3';
+    });
+    $('zz-copymsg').textContent = copied ? t.copied : t.buildNote;
+    renderFormats();
+    var shot = $('zz-shot');
+    if (shot) { shot.src = 'assets/img/screenshot-' + state.lang + '.webp'; shot.alt = t.shotAlt; }
+  }
+
+  document.querySelectorAll('[data-lang]').forEach(function (b) {
+    b.addEventListener('click', function () { state.lang = b.getAttribute('data-lang'); try { localStorage.setItem('zzzip-lang', state.lang); } catch (e) {} applyLang(); });
+  });
+  var timer;
+  $('zz-copy').addEventListener('click', function () {
+    var txt = 'git clone https://github.com/MrGamingITA/zzzip.git \\\n&& cd zzzip && ./scripts/install.sh';
+    try { if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(function () {}); } catch (e) {}
+    copied = true; $('zz-copy-ico').style.display = 'none'; $('zz-copied-ico').style.display = '';
+    $('zz-copymsg').textContent = ZZ_T[state.lang].copied;
+    clearTimeout(timer);
+    timer = setTimeout(function () { copied = false; $('zz-copy-ico').style.display = ''; $('zz-copied-ico').style.display = 'none'; $('zz-copymsg').textContent = ZZ_T[state.lang].buildNote; }, 2000);
+  });
+  // mouse parallax on hero
+  var hero = $('zz-hero'), raf = 0;
+  hero.addEventListener('mousemove', function (e) {
+    var cx = e.clientX, cy = e.clientY; if (raf) return;
+    raf = requestAnimationFrame(function () {
+      raf = 0; var r = hero.getBoundingClientRect();
+      hero.style.setProperty('--mx', Math.max(-0.5, Math.min(0.5, (cx - r.left) / r.width - 0.5)).toFixed(3));
+      hero.style.setProperty('--my', Math.max(-0.5, Math.min(0.5, (cy - r.top) / r.height - 0.5)).toFixed(3));
+    });
+  });
+  hero.addEventListener('mouseleave', function () { hero.style.setProperty('--mx', '0'); hero.style.setProperty('--my', '0'); });
+
+  applyLang();
+})();
+</script>
+</body>
+</html>

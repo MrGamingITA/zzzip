@@ -1,5 +1,5 @@
 #!/bin/bash
-# Publishes a new Zzzip version: bumps the version, builds a signed (EdDSA) DMG,
+# Publishes a new Zzzip version: bumps the version (also on the website), builds a signed (EdDSA) DMG,
 # creates the GitHub release and updates appcast.xml so installed copies update themselves.
 #
 #   scripts/release.sh 1.1.0 [notes.md]
@@ -23,6 +23,7 @@ echo "▸ Zzzip $NEW (build $BUILD)"
 
 # 1. bump version, test, build DMG
 sed -i '' "s/MARKETING_VERSION: \"[^\"]*\"/MARKETING_VERSION: \"$NEW\"/; s/CURRENT_PROJECT_VERSION: \"[^\"]*\"/CURRENT_PROJECT_VERSION: \"$BUILD\"/" project.yml
+sed -i '' -E "s/(macOS 14\+ · )v[0-9]+\.[0-9]+\.[0-9]+/\1v$NEW/g" website/index.html
 ./scripts/test.sh >/dev/null || { echo "Tests failed — nothing published"; git checkout project.yml; exit 1; }
 ./scripts/make-dmg.sh
 DMG="build/dist/Zzzip-$NEW.dmg"
@@ -42,9 +43,11 @@ read -r -p "Publish v$NEW to GitHub now (commit, tag, push, release)? [y/N] " ok
 [ "$ok" = y ] || { echo "Stopped. Version bump and appcast.xml are left uncommitted."; exit 0; }
 
 # 3. version commit + release first, appcast last (so clients never see a link that 404s)
-git add project.yml && git commit -qm "Release $NEW" && git tag "v$NEW"
+git add project.yml website/index.html && git commit -qm "Release $NEW" && git tag "v$NEW"
 git push -q origin main "v$NEW"
-gh release create "v$NEW" "$DMG" "$DMG.sha256" --repo "$REPO" --title "Zzzip $NEW" \
+# "Zzzip.dmg" is a stable name: the website's Download button points to releases/latest/download/Zzzip.dmg
+cp "$DMG" build/dist/Zzzip.dmg
+gh release create "v$NEW" "$DMG" "$DMG.sha256" build/dist/Zzzip.dmg --repo "$REPO" --title "Zzzip $NEW" \
   ${NOTES:+--notes-file "$NOTES"} ${NOTES:---generate-notes}
 git add appcast.xml && git commit -qm "appcast: $NEW" && git push -q origin main
 echo "✓ Published https://github.com/$REPO/releases/tag/v$NEW"

@@ -49,7 +49,8 @@ final class FileListController: NSViewController, NSTableViewDataSource, NSTable
         table.usesAlternatingRowBackgroundColors = true
         table.allowsMultipleSelection = true
         table.allowsColumnReordering = true
-        table.columnAutoresizingStyle = .lastColumnOnlyAutoresizingStyle
+        // The Name column absorbs width changes, so the other columns are never pushed past the right edge.
+        table.columnAutoresizingStyle = .firstColumnOnlyAutoresizingStyle
         table.rowHeight = 22
         for (id, title, width) in [("name", String(localized: "Name"), 300.0), ("folder", String(localized: "Folder"), 160.0),
                                    ("size", String(localized: "Size"), 80.0), ("packed", String(localized: "Packed"), 80.0),
@@ -70,6 +71,22 @@ final class FileListController: NSViewController, NSTableViewDataSource, NSTable
         table.draggingDestinationFeedbackStyle = .none
         scroll.documentView = table
         view = scroll
+    }
+
+    private var didSetPreferredWidths = false
+    override func viewDidLayout() {
+        super.viewDidLayout()
+        guard let clip = table.enclosingScrollView?.contentView, clip.bounds.width > 0 else { return }
+        let others = table.tableColumns.filter { $0.identifier.rawValue != "name" && !$0.isHidden }
+        if !didSetPreferredWidths {
+            didSetPreferredWidths = true
+            let preferred: [String: CGFloat] = ["size": 80, "packed": 80, "kind": 130, "modified": 150, "folder": 160]
+            for c in others { c.width = preferred[c.identifier.rawValue] ?? c.width }
+        }
+        // The Name column takes whatever is left, so the other columns never fall off the right edge.
+        let used = others.reduce(CGFloat(0)) { $0 + $1.width + table.intercellSpacing.width }
+        let name = max(160, clip.bounds.width - used - table.intercellSpacing.width - 2)
+        if let col = table.tableColumn(withIdentifier: .init("name")), abs(col.width - name) > 0.5 { col.width = name }
     }
 
     func show(folder: ArchiveNode) {
