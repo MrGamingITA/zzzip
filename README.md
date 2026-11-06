@@ -1,8 +1,20 @@
-<p align="center"><img src="assets/AppIcon-1024.png" width="160" alt="Zzzip icon"></p>
+<a href="https://mrgamingita.github.io/zzzip/"><img src="assets/readme-hero.jpg" alt="Zzzip — Open archives. Don't just unpack them." width="100%"></a>
 
-<h1 align="center">Zzzip</h1>
-<p align="center"><b>Open archives, don't just unpack them.</b><br>
-A free, open-source archive manager for macOS · <a href="#italiano">Italiano</a> · <a href="#english">English</a></p>
+<p align="center">
+  <img src="assets/AppIcon-1024.png" width="96" alt="Zzzip icon"><br>
+  <b>Zzzip</b> — a free, open-source archive manager for macOS<br>
+  <a href="https://github.com/MrGamingITA/zzzip/releases/latest/download/Zzzip.dmg"><b>⬇ Download for macOS</b></a> ·
+  <a href="https://mrgamingita.github.io/zzzip/">Website</a> ·
+  <a href="#italiano">Italiano</a> ·
+  <a href="#english">English</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/MrGamingITA/zzzip/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/MrGamingITA/zzzip?color=7c4dff&label=release"></a>
+  <img alt="macOS 14+" src="https://img.shields.io/badge/macOS-14%2B-5b2bb5?logo=apple&logoColor=white">
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-f26b2a"></a>
+  <img alt="Powered by 7-Zip" src="https://img.shields.io/badge/powered%20by-7--Zip-3b2585">
+</p>
 
 ---
 
