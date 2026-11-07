@@ -69,6 +69,12 @@ a{color:#FFD9B8}a:hover{color:#FFFFFF}
 @media (max-width:560px){.zz-nav-links{display:none!important}.zz-bubble{right:-14px!important;top:-58px!important}}
 @media (prefers-reduced-motion:reduce){.zz-float{animation:none}.zz-btn,.zz-card{transition:none}html{scroll-behavior:auto}}
 @media (max-width:560px){#zz-shot{width:calc(100% + 24px)!important;margin:-10px -12px -18px!important}}
+/* Apple-style frosted glass behind text that sits on busy artwork (moon, stars, clouds) */
+.zz-glass{position:relative;background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.04)),rgba(34,16,84,.34);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);border:1px solid rgba(255,255,255,.18);box-shadow:0 24px 60px rgba(10,4,40,.35),inset 0 1px 0 rgba(255,255,255,.28)}
+.zz-glass-hero{border-radius:32px;padding:36px 40px 32px}
+.zz-glass-pill{border-radius:999px;padding:10px 24px}
+.zz-glass-pill>span[aria-hidden]{display:none}
+@media (max-width:560px){.zz-glass-hero{border-radius:24px;padding:24px 20px}}
 </style>
 </head>
 <body>
@@ -90,7 +96,7 @@ a{color:#FFD9B8}a:hover{color:#FFFFFF}
 <span style="font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 34px; letter-spacing: .5px">Zzzip</span>
 </a>
 <nav aria-label="Main" style="display: flex; align-items: center; gap: 26px; flex-wrap: wrap">
-<div class="zz-nav-links" style="display: flex; gap: 26px; align-items: center">
+<div class="zz-nav-links zz-glass zz-glass-pill" style="display: flex; gap: 26px; align-items: center">
 <a href="#features" class="zz-nav zz-focus" style="color: #F1ECFF; text-decoration: none; font-weight: 700; font-size: 15px"><span data-i18n="navFeatures"></span></a>
 <a href="#download" class="zz-nav zz-focus" style="color: #F1ECFF; text-decoration: none; font-weight: 700; font-size: 15px"><span data-i18n="navDownload"></span></a>
 <a href="https://github.com/MrGamingITA/zzzip" class="zz-nav zz-focus" style="color: #F1ECFF; text-decoration: none; font-weight: 700; font-size: 15px">GitHub</a>
@@ -105,7 +111,7 @@ a{color:#FFD9B8}a:hover{color:#FFFFFF}
 
 <!-- ============ HERO ============ -->
 <section id="top" style="max-width: 1200px; margin: 0 auto; padding: 40px 24px 40px; display: flex; flex-wrap: wrap; gap: 48px; align-items: center; position: relative; z-index: 2">
-<div style="flex: 1 1 420px; min-width: 0">
+<div class="zz-glass zz-glass-hero" style="flex: 1 1 420px; min-width: 0">
 <h1 style="margin: 0; font-family: 'Fredoka', sans-serif; font-weight: 700; color: #FFF1DE; font-size: clamp(40px, 5.4vw, 64px); line-height: 1.06; letter-spacing: -.5px">
 <span style="display: block"><span data-i18n="h1a"></span></span>
 <span style="display: block"><span data-i18n="h1b"></span></span>
