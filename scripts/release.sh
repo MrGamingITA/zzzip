@@ -23,7 +23,7 @@ echo "▸ Zzzip $NEW (build $BUILD)"
 
 # 1. bump version, test, build DMG
 sed -i '' "s/MARKETING_VERSION: \"[^\"]*\"/MARKETING_VERSION: \"$NEW\"/; s/CURRENT_PROJECT_VERSION: \"[^\"]*\"/CURRENT_PROJECT_VERSION: \"$BUILD\"/" project.yml
-sed -i '' -E "s/(macOS 14\+ · )v[0-9]+\.[0-9]+\.[0-9]+/\1v$NEW/g" website/index.html
+sed -i '' -E "s/(Versione? )[0-9]+\.[0-9]+\.[0-9]+( · )/\1$NEW\2/g" website/index.html   # version shown on the site
 ./scripts/test.sh >/dev/null || { echo "Tests failed — nothing published"; git checkout project.yml; exit 1; }
 ./scripts/make-dmg.sh
 DMG="build/dist/Zzzip-$NEW.dmg"
